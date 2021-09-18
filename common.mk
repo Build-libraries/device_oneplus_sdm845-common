@@ -26,6 +26,11 @@ endif
 # Get non-open-source specific aspects
 $(call inherit-product, vendor/oneplus/sdm845-common/sdm845-common-vendor.mk)
 
+# Inherit OP Camera & gallery packages
+ifeq ($(TARGET_SHIPS_OOSCAM),true)
+$(call inherit-product, vendor/oneplus/camera/sdm845/config.mk)
+endif
+
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay \
@@ -39,6 +44,9 @@ PRODUCT_PACKAGES += \
     OnePlusIconShapeSquircleOverlay \
     OnePlusIconShapeTeardropOverlay \
     TelephonyResCommon
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/vendor_overlay/android.hardware.camera.provider@2.4-service.rc:$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/etc/init/android.hardware.camera.provider@2.4-service.rc
 
 # Properties
 PRODUCT_COMPATIBLE_PROPERTY_OVERRIDE := true
@@ -94,13 +102,13 @@ PRODUCT_PACKAGES_DEBUG += \
 
 # Camera
 PRODUCT_PACKAGES += \
-    libcvface_api \
-    Snap
+    libcvface_api
 
 # Common init scripts
 PRODUCT_PACKAGES += \
     init.adaptive_charging.rc \
     init.device_extras.rc \
+    init.opcamera.rc \
     init.qcom.rc \
     init.recovery.qcom.rc \
     ueventd.qcom.rc
